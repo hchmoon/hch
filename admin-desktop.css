@@ -1,0 +1,380 @@
+/* ═══════════════════════════════════════════════════════════
+   admin-desktop.css — تخطيط سطح المكتب فقط (900px+)
+   ═══════════════════════════════════════════════════════════
+   • الهاتف: لا شيء هنا — التخطيط من admin.css
+   • الحاسوب: قائمة جانبية + الفلاتر في سطر + زر الإضافة أسفلها
+   ═══════════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════════════════════════════════════════
+   📱 الهاتف (< 900px) — ضبط شريط الفلاتر فقط
+   ═══════════════════════════════════════════════════════════ */
+   /* ═══ قواعد أساسية (تعمل على كل الأجهزة) ═══ */
+.add-fab-text { display: none; }
+.products-toolbar { display: contents; }
+
+
+
+/* ═══════════════════════════════════════════════════════════
+   💻 الحاسوب والتابلت الكبير (900px+)
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+
+  body { padding-bottom: 0; }
+
+  /* ═══ الشبكة الكاملة: Sidebar + Main ═══ */
+  #appContainer {
+    display: grid !important;
+    grid-template-columns: 260px 1fr;
+    grid-template-areas:
+      "header header"
+      "sidebar main"
+      "footer footer";
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    direction: ltr;
+  }
+
+  #appContainer > * { direction: rtl; text-align: right; }
+
+  #appContainer > header {
+    grid-area: header;
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+  }
+
+  /* ═══ القائمة الجانبية ═══ */
+  #appContainer > .main-nav {
+    grid-area: sidebar;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px 12px;
+    background: #fff;
+    border-inline-end: 1px solid var(--border);
+    border-bottom: none;
+    min-height: calc(100vh - 70px);
+    overflow-y: auto;
+    position: sticky;
+    top: 70px;
+  }
+
+  #appContainer > .main-nav .nav-btn {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    gap: 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    min-height: 46px;
+  }
+
+  #appContainer > .main-nav .nav-btn::before {
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  #appContainer > .main-nav .nav-btn[data-page="products"]::before  { content: "\f466"; }
+  #appContainer > .main-nav .nav-btn[data-page="families"]::before  { content: "\f02c"; }
+  #appContainer > .main-nav .nav-btn[data-page="orders"]::before    { content: "\f543"; }
+  #appContainer > .main-nav .nav-btn[data-page="inventory"]::before { content: "\f494"; }
+  #appContainer > .main-nav .nav-btn[data-page="reviews"]::before   { content: "\f086"; }
+  #appContainer > .main-nav .nav-btn[data-page="landing"]::before   { content: "\f135"; }
+  #appContainer > .main-nav .nav-btn[data-page="settings"]::before  { content: "\f013"; }
+
+  #appContainer > .main-nav .nav-btn .badge { margin-inline-start: auto; }
+
+  /* ═══ منطقة المحتوى ═══ */
+  #appContainer > .page.active {
+    grid-area: main;
+    padding: 24px 32px 40px;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  #appContainer > footer {
+    grid-area: footer;
+    margin-top: 0;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     🎯 شريط الأدوات: الفلاتر في سطر، زر الإضافة أسفلها
+     ═══════════════════════════════════════════════════════════ */
+  .products-toolbar {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+    padding-bottom: 16px !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  #familyFilterSection {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    overflow: visible !important;
+    justify-content: flex-start !important;
+    min-height: auto !important;
+  }
+
+  #familyFilterSection .filter-btn,
+  #familyFilterSection .family-dropdown-btn {
+    padding: 8px 14px !important;
+    font-size: 13px !important;
+    min-height: 40px !important;
+    gap: 6px !important;
+  }
+
+  #familyFilterSection .filter-btn i,
+  #familyFilterSection .family-dropdown-btn i {
+    font-size: 13px !important;
+  }
+
+  #familyFilterSection .filter-count {
+    font-size: 11px !important;
+    padding: 2px 8px !important;
+    min-width: 22px !important;
+  }
+
+  #familyFilterSection .filter-clear {
+    padding: 7px 14px !important;
+    font-size: 12px !important;
+  }
+
+  /* زر إضافة المنتج: أسفل الفلاتر، على اليمين */
+  .products-toolbar .add-fab {
+    position: static !important;
+    flex: 0 0 auto !important;
+    align-self: flex-end !important;
+    width: auto !important;
+    height: 42px !important;
+    min-height: 42px !important;
+    border-radius: 10px !important;
+    padding: 0 20px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    gap: 8px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: 0 !important;
+    box-shadow: 0 4px 12px rgba(0,128,96,.18) !important;
+    transition: all 0.2s ease;
+  }
+
+  .products-toolbar .add-fab:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,128,96,.25) !important;
+  }
+
+  .products-toolbar .add-fab:active { transform: translateY(0); }
+  .products-toolbar .add-fab i { font-size: 13px; }
+  .products-toolbar .add-fab-text { display: inline !important; }
+
+  /* ═══ شبكة المنتجات ═══ */
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    padding: 0;
+  }
+  .product-card { min-height: 360px; }
+  .product-card img { height: 200px; }
+
+  /* ═══ الطلبات ═══ */
+  .order-card { margin: 0 0 14px; padding: 18px 20px; }
+
+  #ordersWarningBanner {
+    margin: 0 0 16px;
+    padding: 16px 20px;
+    gap: 14px;
+    font-size: 13.5px;
+  }
+  #ordersWarningBanner > i { font-size: 22px; }
+  #ordersWarningBanner > div { flex: 1 1 auto; }
+  #cleanupOldOrdersBtn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+
+  #deleteAllConfirmedWrap {
+    text-align: center;
+    padding: 0 0 16px;
+  }
+  #deleteAllConfirmedBtn {
+    padding: 11px 24px;
+    font-size: 13.5px;
+    min-width: 220px;
+    width: auto !important;
+    display: inline-flex !important;
+    justify-content: center;
+  }
+
+  /* ═══ الترويج ═══ */
+  .landing-intro { margin: 0 0 16px; }
+  .landing-list { padding: 0; }
+
+  /* ═══ التقييمات ═══ */
+  .reviews-container { padding: 0; }
+
+  /* ═══ الإعدادات ═══ */
+  .settings-panel { max-width: 900px; margin: 0 auto; padding: 0; }
+  .settings-tabs {
+    padding: 10px 0;
+    background: transparent;
+    margin-bottom: 20px;
+  }
+
+  /* ═══ المخزون ═══ */
+  .inv-stats-main { padding: 0 0 14px; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .inv-info-bar { margin: 0 0 16px; }
+  .inv-section { margin: 0 0 16px; }
+  .inv-alert { margin: 0 0 12px; }
+
+  #invDetailContainer {
+    margin: 0 0 20px;
+    padding: 18px 20px;
+  }
+  #invDetailContainer .inv-section-header {
+    margin-bottom: 16px;
+  }
+
+  /* ═══ شريط الفلاتر العامة ═══ */
+  .filter-section, .orders-chips, .inv-tabs {
+    padding: 12px 0;
+    background: transparent;
+    margin-bottom: 20px;
+  }
+
+  /* ═══ Toast ═══ */
+  .toast { bottom: 40px; }
+
+  /* ═══ صفحة العائلات ═══ */
+  .families-header { padding: 0; margin-bottom: 24px; }
+  .families-header-info h2 { font-size: 24px; }
+  .families-grid { padding: 0; max-width: 900px; }
+  .family-card { padding: 18px 20px; }
+  .family-card-name { font-size: 16px; }
+
+  /* ═══ تحسين حجم الأزرار على الحاسوب ═══ */
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger,
+  .btn-success {
+    width: auto !important;
+    min-width: 140px;
+    max-width: fit-content;
+    padding: 10px 24px;
+    display: inline-flex;
+    margin-top: 8px;
+  }
+
+  .settings-card a.btn-primary,
+  .settings-card a.btn-secondary,
+  .settings-card a.btn-danger {
+    width: auto !important;
+    display: inline-flex !important;
+    padding: 10px 24px;
+    text-decoration: none;
+  }
+
+  #addUserBtn { width: auto !important; min-width: 160px; }
+
+
+
+  #addZoneBtn,
+  #btnExcelImport,
+  #btnSetup,
+  #btnDeleteAllProducts {
+    width: auto !important;
+    min-width: 180px;
+  }
+
+  .settings-card input:not([type="checkbox"]),
+  .settings-card select,
+  .settings-card textarea,
+  .toggle-row {
+    width: 100% !important;
+  }
+
+  .upload-btns-row .upload-btn {
+    width: auto !important;
+    flex: 1;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   شاشات كبيرة جداً (1400px+)
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 1400px) {
+  #appContainer > .page.active { padding: 32px 40px 48px; }
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+  }
+}
+/* ═══════════════════════════════════════════════════════════
+   🎨 FIX — زر "Enregistrer les politiques" يصبح بحجم
+   "Ajouter une politique" على الحاسوب
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+  #savePoliciesBtn {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 12px 18px !important;
+    margin-top: 10px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    border-radius: var(--radius-sm) !important;
+    background: var(--primary) !important;
+    color: #fff !important;
+    border: 1px solid var(--primary) !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .15) inset, var(--shadow-xs) !important;
+    letter-spacing: -0.005em !important;
+  }
+  
+  #savePoliciesBtn:hover {
+    background: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+  }
+}
+/* ═══════════════════════════════════════════════════════════
+   🎨 FIX — زرا السياسات يصبحان بنفس الحجم الصغير
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 900px) {
+  #stab-policies .add-item-btn,
+  #stab-policies #savePoliciesBtn {
+    width: auto !important;
+    min-width: 200px !important;
+    max-width: fit-content !important;
+    padding: 12px 24px !important;
+    margin: 10px 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    border-radius: var(--radius-sm) !important;
+  }
+}
