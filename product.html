@@ -487,13 +487,21 @@ body[data-theme="navy"] .lang-btn:hover {
 .swiper{
   width:100%;height:auto;
   aspect-ratio:1/1;
-  background:var(--bg-2);
+  background:var(--card);   /* خلفية بيضاء نظيفة للصور الكاملة */
+}
+.swiper-slide{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--card);
 }
 .swiper-slide img{
   width:100%;height:100%;
-  object-fit:cover;
-  cursor:zoom-in;
+  object-fit:contain;       /* ✅ يُظهر الصورة كاملة بدون قص */
   display:block;
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-drag:none;
 }
 .swiper-pagination{
   bottom:12px !important;
@@ -2721,16 +2729,31 @@ function rebuildSwiper(newImages) {
   }
 
   window.__mainSwiper = new Swiper(".mainSwiper", {
-    pagination: { el: ".swiper-pagination", clickable: true },
-    loop: newImages.length > 1,
-    allowTouchMove: true,
-    slidesPerView: 1,
-    spaceBetween: 0,
-    grabCursor: true,
-    observer: true,
-    observeParents: true,
-    watchOverflow: true
-  });
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true
+  },
+  /* ✅ autoplay: تبديل تلقائي كل ثانية */
+  autoplay: newImages.length > 1 ? {
+    delay: 1000, // ⏱️ 1000ms = ثانية واحدة بين كل صورة
+    disableOnInteraction: false, // يستمر بعد لمس المستخدم
+    pauseOnMouseEnter: false, // لا يتوقف عند تمرير الماوس
+    waitForTransition: true
+  } : false,
+  speed: 500, // سرعة الانتقال بين الصور
+  /* ✅ loop للصور المتعددة، rewind للصورتين (أكثر أماناً) */
+  loop: newImages.length > 2,
+  rewind: newImages.length === 2,
+  allowTouchMove: true,
+  slidesPerView: 1,
+  spaceBetween: 0,
+  grabCursor: true,
+  observer: true,
+  observeParents: true,
+  watchOverflow: true,
+  effect: 'slide', // تأثير انزلاق سلس
+  fadeEffect: { crossFade: false }
+});
 
   console.log('✅ Swiper rebuilt with', newImages.length, 'images');
 }
