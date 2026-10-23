@@ -3774,11 +3774,14 @@ function renderInventoryPage() {
   const cur = curLbl();
   const periodOrders = getPeriodOrders();
   let revenue = 0, cost = 0;
-  periodOrders.forEach(o => {
-    revenue += Number(o.totalPrice) || 0;
-    (o.items || []).forEach(it => { const q = Number(it.quantity) || 0; cost += getCostForItem(it) * q; });
-  });
-  const profit = revenue - cost;
+periodOrders.forEach(o => {
+  // ✅ حساب الإيرادات بناءً على مجموع أسعار المنتجات فقط (بدون الشحن)
+  const oItemsSum = (o.items || []).reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
+  revenue += oItemsSum;
+  
+  (o.items || []).forEach(it => { const q = Number(it.quantity) || 0; cost += getCostForItem(it) * q; });
+});
+const profit = revenue - cost;
   setBentoValue("statRevenue", fmt(revenue) + ' ' + cur);
   setBentoValue("statProfit", fmt(profit) + ' ' + cur);
   setBentoValue("statCost", fmt(cost) + ' ' + cur);
@@ -3931,13 +3934,19 @@ function buildInvDetail(type) {
   const periodLabel = getPeriodLabel();
   let title = '', rows = [], total = '', totalValue = '';
   if (type === 'revenue' || type === 'orders') {
-    title = type === 'revenue' ? 'تفاصيل المبيعات' : 'تفاصيل الطلبات';
-    periodOrders.forEach(o => {
-      const ts = o.timestamp || o.confirmedAt || 0;
-      rows.push([o.customerName || '-', o.phone || '-', fmt(o.totalPrice) + ' ' + cur, formatDate(ts)]);
-    });
-    if (rows.length) { total = 'الإجمالي'; totalValue = fmt(periodOrders.reduce((s, o) => s + (Number(o.totalPrice) || 0), 0)) + ' ' + cur; }
-  } else if (type === 'profit' || type === 'cost') {
+  title = type === 'revenue' ? 'تفاصيل المبيعات' : 'تفاصيل الطلبات';
+  periodOrders.forEach(o => {
+    const ts = o.timestamp || o.confirmedAt || 0;
+    // ✅ عرض قيمة المنتجات فقط بدون الشحن
+    const oItemsSum = (o.items || []).reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
+    rows.push([o.customerName || '-', o.phone || '-', fmt(oItemsSum) + ' ' + cur, formatDate(ts)]);
+  });
+  if (rows.length) {
+    total = 'الإجمالي';
+    // ✅ جمع الإيرادات بدون الشحن
+    totalValue = fmt(periodOrders.reduce((s, o) => s + (o.items || []).reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0), 0)) + ' ' + cur;
+  }
+} else if (type === 'profit' || type === 'cost') {
     title = type === 'profit' ? 'تفاصيل الأرباح' : 'تفاصيل التكلفة';
     const map = {};
     periodOrders.forEach(o => { (o.items || []).forEach(it => {
