@@ -3039,12 +3039,12 @@ if (storeFeatures.variantsColors || storeFeatures.variantsSizes) {
   });
   
   data.variants = {
-    enabled: currentVariants.enabled === true && (cleanColors.length > 0 || cleanSizes.length > 0),
-    colors: cleanColors,
-    sizes: cleanSizes,
-    skus: cleanSkus,
-    sizeChart: currentVariants.sizeChart || { enabled: false, headers: [], rows: [] }
-  };
+  enabled: (cleanColors.length > 0 || cleanSizes.length > 0),
+  colors: cleanColors,
+  sizes: cleanSizes,
+  skus: cleanSkus,
+  sizeChart: currentVariants.sizeChart || { enabled: false, headers: [], rows: [] }
+};
 }
 
 if (id) {

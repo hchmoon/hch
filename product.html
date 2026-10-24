@@ -3415,16 +3415,25 @@ function getColorDisplayName(color) {
 /* عرض Variants في الصفحة */
 function renderVariants() {
   const v = product.variants;
-if (!v || v.enabled !== true) {
-  $("variantsBox").style.display = "none";
-  return;
-}
-
-/* ✅ التحقق من مفتاح الإظهار */
-if (!storeFeatures.showVariantsProduct) {
-  $("variantsBox").style.display = "none";
-  return;
-}
+  if (!v) {
+    $("variantsBox").style.display = "none";
+    return;
+  }
+  
+  /* 🔓 اقبل العرض إذا كان enabled=true أو وُجدت ألوان/مقاسات (للتوافق مع المنتجات القديمة) */
+  const hasColors = Array.isArray(v.colors) && v.colors.some(c => c.name || c.nameFr);
+  const hasSizes = Array.isArray(v.sizes) && v.sizes.some(s => s.name);
+  
+  if (v.enabled !== true && !hasColors && !hasSizes) {
+    $("variantsBox").style.display = "none";
+    return;
+  }
+  
+  /* ✅ التحقق من مفتاح الإظهار */
+  if (!storeFeatures.showVariantsProduct) {
+    $("variantsBox").style.display = "none";
+    return;
+  }
   
   const colors = Array.isArray(v.colors) ? v.colors.filter(c => c.name || c.nameFr) : [];
   const sizes = Array.isArray(v.sizes) ? v.sizes.filter(s => s.name) : [];

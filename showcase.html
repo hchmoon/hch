@@ -1232,13 +1232,14 @@ function isLightColorMini(hex){
   return ((0.299*r + 0.587*g + 0.114*b) / 255) > 0.75;
 }
 
-function buildVariantsMiniHtml(p){
+function buildVariantsMiniHtml(p) {
   if (!storeFeatures.showVariantsShowcase) return '';
   const v = p.variants;
-  if (!v || v.enabled !== true) return '';
+  if (!v) return '';
   const colors = Array.isArray(v.colors) ? v.colors.filter(c => c.name || c.nameFr) : [];
-  const sizes  = Array.isArray(v.sizes)  ? v.sizes.filter(s => s.name) : [];
+  const sizes = Array.isArray(v.sizes) ? v.sizes.filter(s => s.name) : [];
   if (!colors.length && !sizes.length) return '';
+  if (v.enabled !== true && !colors.length && !sizes.length) return '';
 
   const lang = LANG();
   const maxColors = 5;
