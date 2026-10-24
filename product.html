@@ -484,14 +484,28 @@ body[data-theme="navy"] .lang-btn:hover {
   position:sticky;
   top:80px;
 }
-.swiper{
-  width:100%;height:auto;
-  aspect-ratio:1/1;
-  background:var(--bg-2);
+/* تصميم الصورة الكبيرة فقط */
+.mainSwiper {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1/1;
+  background: var(--bg-2);
+}
+
+/* تصميم شريط الصور الصغيرة (تثبيت الارتفاع لإلغاء المربع الكبير) */
+.thumbsSwiper {
+  width: 100%;
+  height: 80px !important; /* هذا هو السطر السحري الذي سيصلح المشكلة */
+  aspect-ratio: auto !important;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  padding: 10px;
+  box-sizing: border-box;
 }
 .swiper-slide img{
   width:100%;height:100%;
-  object-fit:cover;
+  object-fit:contain; /* هذا السطر يمنع قص الصورة ويظهرها كاملة */
+  background:#f8fafc;
   cursor:zoom-in;
   display:block;
 }
@@ -520,6 +534,30 @@ body[data-theme="navy"] .lang-btn:hover {
   border-radius:4px !important;
 }
 @media(max-width:850px){.gallery-card{position:static}}
+.thumbsSwiper {
+  background: var(--card);
+  border-top: 1px solid var(--border);
+}
+.thumbsSwiper .swiper-slide {
+  width: 60px !important;
+  height: 60px !important;
+  opacity: 0.5;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+.thumbsSwiper .swiper-slide-thumb-active {
+  opacity: 1;
+  border-color: var(--primary);
+}
+.thumbsSwiper .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: calc(var(--radius-sm) - 2px);
+}
 
 .content-col{
   display:flex;flex-direction:column;gap:16px;
@@ -1882,6 +1920,27 @@ footer a:hover{
   font-weight: 700;
 }
 
+/* تنسيق إطار صورة اللون المخصصة */
+.color-custom-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  margin-top: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.color-swatch-wrapper.selected .color-custom-img {
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,128,96,0.3);
+}
+.color-swatch-wrapper.selected .color-swatch-name {
+  color: var(--primary);
+  font-weight: 700;
+}
+
 /* ─── أزرار المقاسات ─── */
 .sizes-grid {
   display: grid;
@@ -2298,11 +2357,16 @@ body.admin-dark ::-webkit-scrollbar-thumb { background: #475569; border-color: v
 
   <main class="layout">
     <div class="gallery-card">
-      <div class="swiper mainSwiper">
-        <div class="swiper-wrapper" id="swiperWrapper"></div>
-        <div class="swiper-pagination"></div>
-      </div>
-    </div>
+  <!-- الصورة الكبيرة -->
+  <div class="swiper mainSwiper">
+    <div class="swiper-wrapper" id="swiperWrapper"></div>
+    <div class="swiper-pagination"></div>
+  </div>
+  <!-- الصور الصغيرة (Thumbnails) -->
+  <div class="swiper thumbsSwiper" style="padding: 10px;">
+    <div class="swiper-wrapper" id="swiperThumbsWrapper"></div>
+  </div>
+</div>
 
     <div class="content-col">
 
@@ -2705,34 +2769,48 @@ function trackPurchase(data) {
    ═══════════════════════════════════════════════════════════ */
 function rebuildSwiper(newImages) {
   const wrapper = document.getElementById('swiperWrapper');
-  if (!wrapper) return;
-
+  const thumbsWrapper = document.getElementById('swiperThumbsWrapper');
+  if (!wrapper || !thumbsWrapper) return;
+  
+  // بناء الصور الكبيرة
   wrapper.innerHTML = newImages.map(u =>
     `<div class="swiper-slide"><img src="${esc(u)}" alt="" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23f1f5f9%22 width=%22100%22 height=%22100%22/%3E%3C/svg%3E'"></div>`
   ).join('');
-
-  if (!Swiper) {
-    console.error('❌ Swiper module NOT available');
-    return;
-  }
-
-  if (window.__mainSwiper && typeof window.__mainSwiper.destroy === 'function') {
-    try { window.__mainSwiper.destroy(true, true); } catch (e) {}
-  }
-
+  
+  // بناء الصور الصغيرة (المصغرات)
+  thumbsWrapper.innerHTML = newImages.map(u =>
+    `<div class="swiper-slide"><img src="${esc(u)}" alt=""></div>`
+  ).join('');
+  
+  if (!Swiper) return;
+  
+  // تدمير النسخ القديمة إن وجدت
+  if (window.__mainSwiper) { try { window.__mainSwiper.destroy(true, true); } catch (e) {} }
+  if (window.__thumbsSwiper) { try { window.__thumbsSwiper.destroy(true, true); } catch (e) {} }
+  
+// تشغيل المصغرات
+window.__thumbsSwiper = new Swiper(".thumbsSwiper", {
+  spaceBetween: 8,
+  slidesPerView: 'auto', // هذا السطر يمنع تمدد الصور ويجعلها تتحرك يمين ويسار
+  freeMode: true,
+  watchSlidesProgress: true,
+});
+  
+  // تشغيل المعرض الكبير مع ربطه بالمصغرات والتشغيل التلقائي
   window.__mainSwiper = new Swiper(".mainSwiper", {
     pagination: { el: ".swiper-pagination", clickable: true },
-    loop: newImages.length > 1,
-    allowTouchMove: true,
+    loop: newImages.length > 2, // يعتمد على عدد الصور
+    autoplay: {
+      delay: 2000, // يتغير كل ثانيتين
+      disableOnInteraction: false,
+    },
+    thumbs: {
+      swiper: window.__thumbsSwiper,
+    },
     slidesPerView: 1,
     spaceBetween: 0,
     grabCursor: true,
-    observer: true,
-    observeParents: true,
-    watchOverflow: true
   });
-
-  console.log('✅ Swiper rebuilt with', newImages.length, 'images');
 }
 
 /* ═══════════════════════════════════════════════════════════ */
@@ -3450,12 +3528,17 @@ function renderVariants() {
   if (colors.length) {
     $("colorsSection").style.display = "flex";
     $("colorsSwatches").innerHTML = colors.map((col, i) => {
-      const light = isLightColor(col.hex) ? ' light-color' : '';
-      return `<div class="color-swatch-wrapper" data-color-idx="${i}">
+  const light = isLightColor(col.hex) ? ' light-color' : '';
+  // التحقق من وجود صورة مخصصة لهذا اللون
+  const colImg = (Array.isArray(col.images) && col.images.length > 0) ? col.images[0] : (col.imageUrl || null);
+  const imgHtml = colImg ? `<img src="${esc(colImg)}" class="color-custom-img" alt="${esc(getColorDisplayName(col))}">` : '';
+  
+  return `<div class="color-swatch-wrapper" data-color-idx="${i}">
         <button type="button" class="color-swatch${light}" style="background:${esc(col.hex || '#888')};" title="${esc(getColorDisplayName(col))}"></button>
         <span class="color-swatch-name">${esc(getColorDisplayName(col))}</span>
+        ${imgHtml}
       </div>`;
-    }).join('');
+}).join('');
     
     $("colorsSwatches").querySelectorAll('.color-swatch-wrapper').forEach(el => {
       el.addEventListener('click', () => {
@@ -3538,16 +3621,6 @@ function selectColor(idx, silent) {
     el.classList.toggle('selected', i === idx);
   });
   $("selectedColorName").textContent = getColorDisplayName(color);
-  
-  /* 🎨 تبديل صور المعرض حسب اللون المختار */
-const colorImages = Array.isArray(color.images) ?
-  color.images.filter(u => u && typeof u === 'string') :
-  (color.imageUrl ? [color.imageUrl] : []);
-const defaultImgs = window.__defaultProductImages || [];
-const imagesToShow = colorImages.length ? colorImages : defaultImgs;
-if (typeof rebuildSwiper === 'function') {
-  rebuildSwiper(imagesToShow);
-}
   
   /* تحديث المقاسات (لأن التوفّر يعتمد على اللون) */
   if (Array.isArray(v.sizes) && v.sizes.length) {
@@ -3661,9 +3734,14 @@ function setupCheckout() {
 
   const fp = $("checkoutPanel"), fb = $("floatingBar");
   window.addEventListener("scroll", () => {
-    const r = fp.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > window.innerHeight) fb.classList.add("show");
-    else fb.classList.remove("show");
+    if (!fp) return;
+    const rect = fp.getBoundingClientRect();
+    // يظهر الشريط فقط إذا اختفى زر الطلب الأساسي من الشاشة (أي نزلنا للأسفل)
+    if (rect.bottom < 0) {
+      fb.classList.add("show");
+    } else {
+      fb.classList.remove("show");
+    }
   });
 
   $("modalCloseBtn").addEventListener("click", () => $("successModal").classList.remove("show"));
