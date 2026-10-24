@@ -1223,10 +1223,6 @@ window.STORE_BOOTSTRAP = {
     showStatus(T("msgOwnerCreated"), "success");
     setTimeout(() => { $("manualBox").scrollIntoView({ behavior:"smooth", block:"center" }); }, 400);
     $("successNav").style.display = "block";
-/* 🧹 مسح أي جلسة تسجيل دخول قديمة حتى لا تتعارض مع المشروع الجديد */
-localStorage.removeItem("auth");
-localStorage.removeItem("user");
-localStorage.removeItem("role");
 
   } catch(err){
     console.error(err);

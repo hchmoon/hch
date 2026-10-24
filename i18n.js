@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   i18n.js — نظام الترجمة الكامل — النسخة النهائية v7 (المعدلة)
+   i18n.js — نظام الترجمة الكامل — النسخة النهائية v6
    ═══════════════════════════════════════════════════════════ */
 (function() {
   'use strict';
@@ -10,6 +10,7 @@
          عام / مشترك
          ═══════════════════════════════════════════ */
       loading:"جاري التحميل...",
+      invPageInfo:"عرض {from} - {to} من {total}",
       invPageInfo:"عرض {from} - {to} من {total}",
       notAllowed:"غير مسموح", noOrders:"لا توجد طلبات",
       noConfirmed:"لا توجد طلبات مؤكدة", noProducts:"لا توجد منتجات", noReviews:"لا توجد تقييمات بعد",
@@ -37,7 +38,6 @@
       newProductsFilterLabel:"الجديدة",
       "الجديدة":"الجديدة",
       "أي منتج كميته أقل من أو يساوي هذا الحد سيُعتبر \"منخفضاً\" في المخزون.": "أي منتج كميته أقل من أو يساوي هذا الحد سيُعتبر \"منخفضاً\" في المخزون.",
-      menuToggle:"القائمة", themeToggleTitle:"ليل/نهار",
 
 /* ═══════════════════════════════════════════
    📦 صفحة المخزون
@@ -168,11 +168,6 @@
       "عرض المنتجات المُضافة خلال:":"عرض المنتجات المُضافة خلال:",
       "يوم":"يوم",
       "المنتجات التي أُضيفت خلال هذه المدة ستظهر في تبويب \"الجديدة\".":"المنتجات التي أُضيفت خلال هذه المدة ستظهر في تبويب \"الجديدة\".",
-      newProductsDaysLabel: "عرض المنتجات المُضافة خلال:",
-      dayUnit: "يوم",
-      newProductsHint: "المنتجات التي أُضيفت خلال هذه المدة ستظهر في تبويب \"الجديدة\".",
-      socialAdded: "الحسابات المضافة (footer)",
-      socialAdd: "إضافة",
 
       /* ═══════════════════════════════════════════
          🎨 نظام الخيارات (Variants)
@@ -223,9 +218,7 @@
 "selectColorFirst": "اختر اللون أولاً",
 "selectSizeFirst": "اختر المقاس أولاً",
 "skuOutOfStock": "نفد",
-"skuNotAvailable": "غير متوفر",      
-
-      /* ═══════════════════════════════════════════
+"skuNotAvailable": "غير متوفر",      /* ═══════════════════════════════════════════
          🎨 منتقي الألوان
          ═══════════════════════════════════════════ */
       "colorPickerTitle":"اختر اللون",
@@ -325,21 +318,36 @@
       /* ═══════════════════════════════════════════
          نصوص Showcase الافتراضية
          ═══════════════════════════════════════════ */
-      "عروض حصرية":"عروض حصرية", "تشكيلة الموسم":"تشكيلة الموسم",
-      "التصفية النهائية":"التصفية النهائية", "الأكثر مبيعاً":"الأكثر مبيعاً",
-      "وصل حديثاً":"وصل حديثاً", "عروض لا تُقاوم":"عروض لا تُقاوم",
-      "تخفيضات كبرى":"تخفيضات كبرى", "اختيارات مميزة":"اختيارات مميزة",
-      "جديدنا لهذا الموسم":"جديدنا لهذا الموسم", "أفضل الأسعار":"أفضل الأسعار",
-      "اكتشف أحدث الموديلات":"اكتشف أحدث الموديلات", "تسوق الآن بأفضل الأسعار":"تسوق الآن بأفضل الأسعار",
-      "خصومات تصل إلى 50%":"خصومات تصل إلى 50%", "جودة عالية وأسعار منافسة":"جودة عالية وأسعار منافسة",
-      "منتجات مختارة بعناية":"منتجات مختارة بعناية", "توصيل سريع لجميع الولايات":"توصيل سريع لجميع الولايات",
-      "عروض حصرية للعملاء الجدد":"عروض حصرية للعملاء الجدد", "كل ما تحتاجه في مكان واحد":"كل ما تحتاجه في مكان واحد",
-      "أسعار الجملة متاحة للجميع":"أسعار الجملة متاحة للجميع", "اختر من تشكيلتنا الواسعة":"اختر من تشكيلتنا الواسعة",
-      "شحن مجاني":"شحن مجاني", "تسوق الآن وادفع عند الاستلام":"تسوق الآن وادفع عند الاستلام",
-      "الدفع عند الاستلام متاح":"الدفع عند الاستلام متاح", "ضمان الجودة 100%":"ضمان الجودة 100%",
-      "خدمة عملاء على مدار الساعة":"خدمة عملاء على مدار الساعة", "إرجاع مجاني خلال 7 أيام":"إرجاع مجاني خلال 7 أيام",
-      "توصيل خلال 24-48 ساعة":"توصيل خلال 24-48 ساعة", "أسعار لا تُقبل المنافسة":"أسعار لا تُقبل المنافسة",
-      "عروض لفترة محدودة":"عروض لفترة محدودة", "اطلب الآن قبل نفاذ الكمية":"اطلب الآن قبل نفاذ الكمية",
+      "عروض حصرية":"عروض حصرية",
+      "تشكيلة الموسم":"تشكيلة الموسم",
+      "التصفية النهائية":"التصفية النهائية",
+      "الأكثر مبيعاً":"الأكثر مبيعاً",
+      "وصل حديثاً":"وصل حديثاً",
+      "عروض لا تُقاوم":"عروض لا تُقاوم",
+      "تخفيضات كبرى":"تخفيضات كبرى",
+      "اختيارات مميزة":"اختيارات مميزة",
+      "جديدنا لهذا الموسم":"جديدنا لهذا الموسم",
+      "أفضل الأسعار":"أفضل الأسعار",
+      "اكتشف أحدث الموديلات":"اكتشف أحدث الموديلات",
+      "تسوق الآن بأفضل الأسعار":"تسوق الآن بأفضل الأسعار",
+      "خصومات تصل إلى 50%":"خصومات تصل إلى 50%",
+      "جودة عالية وأسعار منافسة":"جودة عالية وأسعار منافسة",
+      "منتجات مختارة بعناية":"منتجات مختارة بعناية",
+      "توصيل سريع لجميع الولايات":"توصيل سريع لجميع الولايات",
+      "عروض حصرية للعملاء الجدد":"عروض حصرية للعملاء الجدد",
+      "كل ما تحتاجه في مكان واحد":"كل ما تحتاجه في مكان واحد",
+      "أسعار الجملة متاحة للجميع":"أسعار الجملة متاحة للجميع",
+      "اختر من تشكيلتنا الواسعة":"اختر من تشكيلتنا الواسعة",
+      "شحن مجاني":"شحن مجاني",
+      "تسوق الآن وادفع عند الاستلام":"تسوق الآن وادفع عند الاستلام",
+      "الدفع عند الاستلام متاح":"الدفع عند الاستلام متاح",
+      "ضمان الجودة 100%":"ضمان الجودة 100%",
+      "خدمة عملاء على مدار الساعة":"خدمة عملاء على مدار الساعة",
+      "إرجاع مجاني خلال 7 أيام":"إرجاع مجاني خلال 7 أيام",
+      "توصيل خلال 24-48 ساعة":"توصيل خلال 24-48 ساعة",
+      "أسعار لا تُقبل المنافسة":"أسعار لا تُقبل المنافسة",
+      "عروض لفترة محدودة":"عروض لفترة محدودة",
+      "اطلب الآن قبل نفاذ الكمية":"اطلب الآن قبل نفاذ الكمية",
 
       /* ═══════════════════════════════════════════
          السياسات
@@ -827,6 +835,7 @@
          ═══════════════════════════════════════════ */
       loading:"Chargement...",
       invPageInfo:"Affichage {from} - {to} sur {total}",
+      invPageInfo:"Affichage {from} - {to} sur {total}",
       notAllowed:"Non autorisé", noOrders:"Aucune commande",
       noConfirmed:"Aucune commande confirmée", noProducts:"Aucun produit", noReviews:"Aucun avis",
       noZones:"Aucune zone", noUsers:"Aucun", noLandingPages:"Aucune page promo",
@@ -853,7 +862,6 @@
       newProductsFilterLabel:"Nouveaux",
       "الجديدة":"Nouveaux",
       "أي منتج كميته أقل من أو يساوي هذا الحد سيُعتبر \"منخفضاً\" في المخزون.": "Tout produit dont la quantité est inférieure ou égale à ce seuil sera considéré comme « faible » dans le stock.",
-      menuToggle:"Menu", themeToggleTitle:"Nuit/Jour",
 
 /* ═══════════════════════════════════════════
    📦 Page Stock
@@ -986,11 +994,6 @@
       "عرض المنتجات المُضافة خلال:":"Afficher les produits ajoutés durant :",
       "يوم":"jours",
       "المنتجات التي أُضيفت خلال هذه المدة ستظهر في تبويب \"الجديدة\".":"Les produits ajoutés durant cette période apparaîtront dans l'onglet « Nouveaux ».",
-      newProductsDaysLabel: "Afficher les produits ajoutés durant :",
-      dayUnit: "jours",
-      newProductsHint: "Les produits ajoutés durant cette période apparaîtront dans l'onglet « Nouveaux ».",
-      socialAdded: "Comptes ajoutés (footer)",
-      socialAdd: "Ajouter",
 
       /* ═══════════════════════════════════════════
          🎨 Système d'options (Variants)
@@ -1687,60 +1690,6 @@
     AR_TO_FR[key] = I18N.fr[key];
   });
 
-  /* ═══════════════════════════════════════════════════════════
-     📌 إضافات يدوية: نصوص ديناميكية غير موجودة كـ data-i18n
-     ═══════════════════════════════════════════════════════════ */
-  AR_TO_FR["حذف جميع الطلبات المؤكدة"] = "Supprimer toutes les commandes confirmées";
-  AR_TO_FR["حذف جميع الطلبات"] = "Supprimer toutes les commandes";
-  AR_TO_FR["تأكيد وحذف"] = "Confirmer et supprimer";
-  AR_TO_FR["الطلبات المؤكدة"] = "Commandes confirmées";
-  AR_TO_FR["الطلبات الجديدة"] = "Nouvelles commandes";
-  AR_TO_FR["طلبات جديدة"] = "Nouvelles commandes";
-  AR_TO_FR["مؤكدة"] = "Confirmées";
-  AR_TO_FR["جديد"] = "Nouveau";
-  AR_TO_FR["حذف الكل"] = "Tout supprimer";
-  AR_TO_FR["تأكيد الحذف؟"] = "Confirmer la suppression ?";
-  AR_TO_FR["تم الحذف"] = "Supprimé";
-  AR_TO_FR["جاري الحفظ..."] = "Enregistrement...";
-  AR_TO_FR["جاري الحذف..."] = "Suppression...";
-  AR_TO_FR["جاري التحميل..."] = "Chargement...";
-  AR_TO_FR["جاري الرفع..."] = "Téléchargement...";
-  AR_TO_FR["تأكيد"] = "Confirmer";
-  AR_TO_FR["إلغاء"] = "Annuler";
-  AR_TO_FR["حذف"] = "Supprimer";
-  AR_TO_FR["حفظ"] = "Enregistrer";
-  AR_TO_FR["تعديل"] = "Modifier";
-  AR_TO_FR["إضافة"] = "Ajouter";
-  AR_TO_FR["عرض"] = "Voir";
-  AR_TO_FR["فتح"] = "Ouvrir";
-  AR_TO_FR["نسخ"] = "Copier";
-  AR_TO_FR["إغلاق"] = "Fermer";
-  AR_TO_FR["رجوع"] = "Retour";
-
-  /* ═══════════════════════════════════════════════════════════
-     🌍 ترجمة الولايات داخل العناوين (الفاصل "-")
-     ═══════════════════════════════════════════════════════════ */
-  function translateWilayaInAddress(text) {
-    if (!text || typeof text !== 'string') return null;
-    /* إذا كان النص لا يحتوي على أي حرف عربي → لا حاجة للترجمة */
-    if (!/[\u0600-\u06FF]/.test(text)) return null;
-    /* ابحث عن أي ولاية معروفة داخل النص واستبدلها */
-    let changed = false;
-    let result = text;
-    Object.entries(WILAYAS_FR).forEach(([arName, frName]) => {
-      if (result.includes(arName)) {
-        /* استبدل كل ظهور للولاية (مع حدود الكلمة أو الفواصل) */
-        const regex = new RegExp('(^|[\\s\\-•·,])' + arName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?=$|[\\s\\-•·,])', 'g');
-        if (regex.test(result)) {
-          result = result.replace(regex, '$1' + frName);
-          changed = true;
-        }
-      }
-    });
-    return changed ? result : null;
-  }
-  window.translateWilayaInAddress = translateWilayaInAddress;
-
   const PATTERNS = [
     { regex: /^يوجد (\d+) منتج نفد من المخزون$/, fn:(m,n)=>`Il y a ${n} produit(s) épuisé(s)` },
     { regex: /^يوجد (\d+) منتج على وشك النفاد$/, fn:(m,n)=>`Il y a ${n} produit(s) bientôt épuisé(s)` },
@@ -1769,15 +1718,9 @@
     { regex: /^سيُحتفظ بـ (\d+) طلب خلال الشهر الأخير\.$/, fn:(m,n)=>`Seront conservées ${n} commande(s) du dernier mois.` },
     { regex: /^تم حذف (\d+) طلب$/, fn:(m,n)=>`${n} commande(s) supprimée(s)` },
     { regex: /^تمت إضافة "(.+)"$/, fn:(m,p)=>`« ${p} » a été ajoutée` },
-    { regex: /^وفّر\s+([\d\s,\.\u00A0]+)$/, fn:(m,n)=>`Économisé ${n.trim()}` },
-    { regex: /^أضف\s+(\d+)\s+للمزيد$/, fn:(m,n)=>`Ajouter ${n} de plus` },
-    { regex: /^\(أضف\s+(\d+)\s+للمزيد\)$/, fn:(m,n)=>`(Ajouter ${n} de plus)` },
-    { regex: /^قطعة$/, fn:()=>`pièce` },
-    { regex: /^قطع$/, fn:()=>`pièces` },
-    { regex: /^قطعة واحدة$/, fn:()=>`1 pièce` },
-    { regex: /^قطعتان$/, fn:()=>`2 pièces` },
-    { regex: /^ق\/قطعة$/, fn:()=>`/pièce` },
+    { regex: /^وفّر (\d+)$/, fn:(m,n)=>`Économisez ${n}` },
     { regex: /^أضف (\d+) أخرى للاستفادة من سعر (.+) للقطعة الواحدة$/, fn:(m,n,p)=>`Ajoutez ${n} de plus pour bénéficier du prix ${p} par pièce` }
+    
   ];
 
   const EMOJI_RE = /^[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}\u{1F1E6}-\u{1F1FF}]+\s*/u;
@@ -1788,14 +1731,7 @@
   window.currentLang = LANG;
 
   function t(k) {
-    const dict = I18N[LANG] || I18N.ar;
-    const v = dict[k];
-    if (v !== undefined && v !== null && v !== '') return v;
-    /* ⚠️ إن كان المفتاح مفقوداً في اللغة الحالية، حذّر المطوّر */
-    if (LANG !== 'ar') {
-      console.warn('⚠️ i18n: مفتاح مفقود في "' + LANG + '":', k);
-    }
-    return (I18N.ar && I18N.ar[k]) || k;
+    return (I18N[LANG] && I18N[LANG][k]) || (I18N.ar && I18N.ar[k]) || k;
   }
 
   function collapseWS(s) {
@@ -1885,11 +1821,6 @@
       const m = trimmed.match(p.regex) || noEmoji.match(p.regex) || collapsed.match(p.regex);
       if (m) return p.fn(...m);
     }
-
-    /* 🌍 ترجمة الولايات داخل العناوين */
-    const wilayaTrans = translateWilayaInAddress(trimmed);
-    if (wilayaTrans) return wilayaTrans;
-
     return null;
   }
 
@@ -1981,28 +1912,20 @@
     const lb = document.getElementById('langBtnLabel');
     if (lb) lb.textContent = LANG === 'fr' ? 'AR' : 'FR';
 
-    /* ✅ استخدم الدالة t() التي تحذّر من المفاتيح الناقصة */
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const k = el.getAttribute('data-i18n');
-      const v = t(k);
-      if (v && v !== k) el.textContent = v;
+      const v = (I18N[LANG] && I18N[LANG][k]) || (I18N.ar && I18N.ar[k]);
+      if (v) el.textContent = v;
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       const k = el.getAttribute('data-i18n-placeholder');
-      const v = t(k);
-      if (v && v !== k) el.placeholder = v;
+      const v = (I18N[LANG] && I18N[LANG][k]) || (I18N.ar && I18N.ar[k]);
+      if (v) el.placeholder = v;
     });
     document.querySelectorAll('[data-i18n-aria]').forEach(el => {
       const k = el.getAttribute('data-i18n-aria');
-      const v = t(k);
-      if (v && v !== k) el.setAttribute('aria-label', v);
-    });
-
-    /* ✅ اعرض النص الكامل للعناصر التي تحمل data-i18n-html */
-    document.querySelectorAll('[data-i18n-html]').forEach(el => {
-      const k = el.getAttribute('data-i18n-html');
-      const v = t(k);
-      if (v && v !== k) el.innerHTML = v;
+      const v = (I18N[LANG] && I18N[LANG][k]) || (I18N.ar && I18N.ar[k]);
+      if (v) el.setAttribute('aria-label', v);
     });
 
     if (LANG !== 'fr') return;
@@ -2012,8 +1935,6 @@
     document.title = document.title.replace("استيراد المنتجات من Excel", "Importer des produits depuis Excel");
     document.title = document.title.replace("معالج إعداد المتجر", "Assistant de configuration");
     document.title = document.title.replace("المعرض", "Showcase");
-    document.title = document.title.replace("صفحة المنتج", "Produit");
-    document.title = document.title.replace("لوحة التحكم", "Tableau de bord");
   }
 
   let _observerStarted = false;
@@ -2022,26 +1943,24 @@
     _observerStarted = true;
     const observer = new MutationObserver(mutations => {
       if (LANG !== 'fr') return;
+      let needsTranslate = false;
       mutations.forEach(m => {
-        /* ✅ معالجة تغيير النص داخل عنصر موجود (وهو ما كان مفقوداً) */
-        if (m.type === 'characterData' && m.target) {
-          translateNode(m.target);
-          return;
-        }
-        /* ✅ معالجة العُقد المُضافة حديثاً */
-        if (m.type === 'childList' && m.addedNodes && m.addedNodes.length) {
-          m.addedNodes.forEach(node => {
-            if (node.nodeType === 1) walkAndTranslate(node);
-            else if (node.nodeType === 3) translateNode(node);
-          });
-        }
+        if (m.type === 'childList' && m.addedNodes.length) needsTranslate = true;
+        if (m.type === 'characterData') needsTranslate = true;
       });
+      if (needsTranslate) {
+        clearTimeout(window._i18nTimer);
+        window._i18nTimer = setTimeout(() => {
+          mutations.forEach(m => {
+            m.addedNodes.forEach(node => {
+              if (node.nodeType === 1) walkAndTranslate(node);
+              else if (node.nodeType === 3) translateNode(node);
+            });
+          });
+        }, 40);
+      }
     });
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      characterData: true
-    });
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     window._i18nObserver = observer;
   }
 
@@ -2096,42 +2015,6 @@
   setTimeout(() => { if (LANG === 'fr') walkAndTranslate(document.body); }, 2000);
   setTimeout(() => { if (LANG === 'fr') walkAndTranslate(document.body); }, 4000);
   setTimeout(() => { if (LANG === 'fr') walkAndTranslate(document.body); }, 6000);
-
-  /* ═══════════════════════════════════════════════════════════
-     🔍 فحص تلقائي للمفاتيح الناقصة
-     ═══════════════════════════════════════════════════════════ */
-  function validateI18n() {
-    const arKeys = new Set(Object.keys(I18N.ar));
-    const frKeys = new Set(Object.keys(I18N.fr));
-    const missingInFr = [...arKeys].filter(k => !frKeys.has(k));
-    const missingInAr = [...frKeys].filter(k => !arKeys.has(k));
-    const keysUsedInDom = new Set();
-    document.querySelectorAll('[data-i18n],[data-i18n-placeholder],[data-i18n-aria],[data-i18n-html]')
-      .forEach(el => {
-        ['data-i18n','data-i18n-placeholder','data-i18n-aria','data-i18n-html']
-          .forEach(attr => {
-            const k = el.getAttribute(attr);
-            if (k) keysUsedInDom.add(k);
-          });
-      });
-    const missingFromDict = [...keysUsedInDom].filter(
-      k => !arKeys.has(k) && !frKeys.has(k)
-    );
-    console.group('🔍 تقرير i18n الكامل');
-    if (missingInFr.length) {
-      console.warn('📌 مفاتيح موجودة بالعربية وغير موجودة بالفرنسية (' + missingInFr.length + '):', missingInFr);
-    }
-    if (missingInAr.length) {
-      console.warn('📌 مفاتيح موجودة بالفرنسية وغير موجودة بالعربية (' + missingInAr.length + '):', missingInAr);
-    }
-    if (missingFromDict.length) {
-      console.error('❌ مفاتيح مستخدمة في HTML وغير موجودة في القاموس (' + missingFromDict.length + '):', missingFromDict);
-    }
-    console.groupEnd();
-    return { missingInFr, missingInAr, missingFromDict };
-  }
-  window.validateI18n = validateI18n;
-  setTimeout(validateI18n, 3000);
 
   setInterval(guardDirection, 500);
 })();
