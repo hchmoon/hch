@@ -1837,20 +1837,13 @@ function applyColorChoice(hex, arName, frName, isCustom) {
   
   currentVariants.colors[i].hex = hex;
   
-  if (isCustom) {
-    /* لون مخصص: نضع الـ HEX في الاسم (يمكن للمستخدم تعديله يدوياً) */
-    currentVariants.colors[i].name = arName;
-    currentVariants.colors[i].nameFr = arName; /* لا ترجمة، يبقى كما هو */
-  } else {
-    /* لون من المكتبة: نضع الاسم بالعربية والفرنسية */
+  // ✅ لا تغير الاسم إذا كان المستخدم قد كتبه بالفعل
+  if (!currentVariants.colors[i].name) {
     currentVariants.colors[i].name = arName;
     currentVariants.colors[i].nameFr = frName;
   }
   
-  /* 🎯 إغلاق النافذة فوراً (قبل تحديث القوائم) */
   closeColorPicker();
-  
-  /* ثم تحديث القوائم */
   renderColorsList();
   renderSkusTable();
 }
@@ -2510,19 +2503,19 @@ function renderColorsList() {
   
   /* ✏️ تعديل الاسم + تحديث الجدول فوراً */
   c.querySelectorAll('[data-color-name]').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const i = parseInt(inp.dataset.colorName);
-      if (!currentVariants.colors[i]) return;
-      const val = e.target.value;
-      if (lang === 'fr') {
-        currentVariants.colors[i].nameFr = val;
-      } else {
-        currentVariants.colors[i].name = val;
-      }
-      const col = currentVariants.colors[i];
-      updateSkusColorHeader(i, col.name, col.nameFr);
-    });
+  inp.addEventListener('input', e => {
+    const i = parseInt(inp.dataset.colorName);
+    if (!currentVariants.colors[i]) return;
+    const val = e.target.value;
+    
+    // ✅ تحديث الاسمين معاً لضمان ظهوره بأي لغة في صفحة المنتج
+    currentVariants.colors[i].name = val;
+    currentVariants.colors[i].nameFr = val;
+    
+    const col = currentVariants.colors[i];
+    updateSkusColorHeader(i, col.name, col.nameFr);
   });
+});
   
   /* 🖼️ زر رفع الصور */
   c.querySelectorAll('[data-color-img-add]').forEach(btn => {
@@ -3623,23 +3616,33 @@ window.open('print_admin.html', '_blank');
 });
 }
     const confirmBtn = card.querySelector('.order-confirm-btn');
-    if (confirmBtn) {
-      confirmBtn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        if (!can('orders.confirm')) return showToast(t('notAllowed'));
-        showToast('جاري التأكيد...');
-        try {
-          const confirmed = await confirmOrderOnly(key, o);
-          const printPayload = { key: key, order: confirmed, type: 'confirmed' };
-          localStorage.setItem('printOrder', JSON.stringify(printPayload));
-window.open('print_admin.html', '_blank');
-        } catch (err) {
-          console.error('Confirm error:', err);
-          showToast('خطأ: ' + err.message);
-        }
-      });
+if (confirmBtn) {
+  confirmBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!can('orders.confirm')) return showToast(t('notAllowed'));
+    showToast('جاري التأكيد...');
+    
+    /* ✅ فتح النافذة أولاً (قبل await) لتفادي مشكلة "توقف الموقع" بسبب مانع النوافذ المنبثقة */
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      alert('⚠️ يرجى السماح بالنوافذ المنبثقة في المتصفح');
+      return;
     }
+    printWin.document.write('<!DOCTYPE html><html dir="rtl"><head><title>...</title></head><body style="font-family:sans-serif;text-align:center;padding:60px;color:#0b6e4f;"><h2>⏳ جاري تحضير الفاتورة...</h2></body></html>');
+    
+    try {
+      const confirmed = await confirmOrderOnly(key, o);
+      const printPayload = { key: key, order: confirmed, type: 'confirmed' };
+      localStorage.setItem('printOrder', JSON.stringify(printPayload));
+      printWin.location.href = 'print_admin.html';
+    } catch (err) {
+      console.error('Confirm error:', err);
+      showToast('خطأ: ' + err.message);
+      try { printWin.close(); } catch (_) {}
+    }
+  });
+}
     c.appendChild(card);
   });
 }
