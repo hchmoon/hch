@@ -1837,13 +1837,20 @@ function applyColorChoice(hex, arName, frName, isCustom) {
   
   currentVariants.colors[i].hex = hex;
   
-  // ✅ لا تغير الاسم إذا كان المستخدم قد كتبه بالفعل
-  if (!currentVariants.colors[i].name) {
+  if (isCustom) {
+    /* لون مخصص: نضع الـ HEX في الاسم (يمكن للمستخدم تعديله يدوياً) */
+    currentVariants.colors[i].name = arName;
+    currentVariants.colors[i].nameFr = arName; /* لا ترجمة، يبقى كما هو */
+  } else {
+    /* لون من المكتبة: نضع الاسم بالعربية والفرنسية */
     currentVariants.colors[i].name = arName;
     currentVariants.colors[i].nameFr = frName;
   }
   
+  /* 🎯 إغلاق النافذة فوراً (قبل تحديث القوائم) */
   closeColorPicker();
+  
+  /* ثم تحديث القوائم */
   renderColorsList();
   renderSkusTable();
 }
@@ -2503,19 +2510,19 @@ function renderColorsList() {
   
   /* ✏️ تعديل الاسم + تحديث الجدول فوراً */
   c.querySelectorAll('[data-color-name]').forEach(inp => {
-  inp.addEventListener('input', e => {
-    const i = parseInt(inp.dataset.colorName);
-    if (!currentVariants.colors[i]) return;
-    const val = e.target.value;
-    
-    // ✅ تحديث الاسمين معاً لضمان ظهوره بأي لغة في صفحة المنتج
-    currentVariants.colors[i].name = val;
-    currentVariants.colors[i].nameFr = val;
-    
-    const col = currentVariants.colors[i];
-    updateSkusColorHeader(i, col.name, col.nameFr);
+    inp.addEventListener('input', e => {
+      const i = parseInt(inp.dataset.colorName);
+      if (!currentVariants.colors[i]) return;
+      const val = e.target.value;
+      if (lang === 'fr') {
+        currentVariants.colors[i].nameFr = val;
+      } else {
+        currentVariants.colors[i].name = val;
+      }
+      const col = currentVariants.colors[i];
+      updateSkusColorHeader(i, col.name, col.nameFr);
+    });
   });
-});
   
   /* 🖼️ زر رفع الصور */
   c.querySelectorAll('[data-color-img-add]').forEach(btn => {
@@ -3616,33 +3623,23 @@ window.open('print_admin.html', '_blank');
 });
 }
     const confirmBtn = card.querySelector('.order-confirm-btn');
-if (confirmBtn) {
-  confirmBtn.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    if (!can('orders.confirm')) return showToast(t('notAllowed'));
-    showToast('جاري التأكيد...');
-    
-    /* ✅ فتح النافذة أولاً (قبل await) لتفادي مشكلة "توقف الموقع" بسبب مانع النوافذ المنبثقة */
-    const printWin = window.open('', '_blank');
-    if (!printWin) {
-      alert('⚠️ يرجى السماح بالنوافذ المنبثقة في المتصفح');
-      return;
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (!can('orders.confirm')) return showToast(t('notAllowed'));
+        showToast('جاري التأكيد...');
+        try {
+          const confirmed = await confirmOrderOnly(key, o);
+          const printPayload = { key: key, order: confirmed, type: 'confirmed' };
+          localStorage.setItem('printOrder', JSON.stringify(printPayload));
+window.open('print_admin.html', '_blank');
+        } catch (err) {
+          console.error('Confirm error:', err);
+          showToast('خطأ: ' + err.message);
+        }
+      });
     }
-    printWin.document.write('<!DOCTYPE html><html dir="rtl"><head><title>...</title></head><body style="font-family:sans-serif;text-align:center;padding:60px;color:#0b6e4f;"><h2>⏳ جاري تحضير الفاتورة...</h2></body></html>');
-    
-    try {
-      const confirmed = await confirmOrderOnly(key, o);
-      const printPayload = { key: key, order: confirmed, type: 'confirmed' };
-      localStorage.setItem('printOrder', JSON.stringify(printPayload));
-      printWin.location.href = 'print_admin.html';
-    } catch (err) {
-      console.error('Confirm error:', err);
-      showToast('خطأ: ' + err.message);
-      try { printWin.close(); } catch (_) {}
-    }
-  });
-}
     c.appendChild(card);
   });
 }
@@ -3777,14 +3774,11 @@ function renderInventoryPage() {
   const cur = curLbl();
   const periodOrders = getPeriodOrders();
   let revenue = 0, cost = 0;
-periodOrders.forEach(o => {
-  // ✅ حساب الإيرادات بناءً على مجموع أسعار المنتجات فقط (بدون الشحن)
-  const oItemsSum = (o.items || []).reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
-  revenue += oItemsSum;
-  
-  (o.items || []).forEach(it => { const q = Number(it.quantity) || 0; cost += getCostForItem(it) * q; });
-});
-const profit = revenue - cost;
+  periodOrders.forEach(o => {
+    revenue += Number(o.totalPrice) || 0;
+    (o.items || []).forEach(it => { const q = Number(it.quantity) || 0; cost += getCostForItem(it) * q; });
+  });
+  const profit = revenue - cost;
   setBentoValue("statRevenue", fmt(revenue) + ' ' + cur);
   setBentoValue("statProfit", fmt(profit) + ' ' + cur);
   setBentoValue("statCost", fmt(cost) + ' ' + cur);
@@ -3937,19 +3931,13 @@ function buildInvDetail(type) {
   const periodLabel = getPeriodLabel();
   let title = '', rows = [], total = '', totalValue = '';
   if (type === 'revenue' || type === 'orders') {
-  title = type === 'revenue' ? 'تفاصيل المبيعات' : 'تفاصيل الطلبات';
-  periodOrders.forEach(o => {
-    const ts = o.timestamp || o.confirmedAt || 0;
-    // ✅ عرض قيمة المنتجات فقط بدون الشحن
-    const oItemsSum = (o.items || []).reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0);
-    rows.push([o.customerName || '-', o.phone || '-', fmt(oItemsSum) + ' ' + cur, formatDate(ts)]);
-  });
-  if (rows.length) {
-    total = 'الإجمالي';
-    // ✅ جمع الإيرادات بدون الشحن
-    totalValue = fmt(periodOrders.reduce((s, o) => s + (o.items || []).reduce((sum, it) => sum + (Number(it.price) || 0) * (Number(it.quantity) || 0), 0), 0)) + ' ' + cur;
-  }
-} else if (type === 'profit' || type === 'cost') {
+    title = type === 'revenue' ? 'تفاصيل المبيعات' : 'تفاصيل الطلبات';
+    periodOrders.forEach(o => {
+      const ts = o.timestamp || o.confirmedAt || 0;
+      rows.push([o.customerName || '-', o.phone || '-', fmt(o.totalPrice) + ' ' + cur, formatDate(ts)]);
+    });
+    if (rows.length) { total = 'الإجمالي'; totalValue = fmt(periodOrders.reduce((s, o) => s + (Number(o.totalPrice) || 0), 0)) + ' ' + cur; }
+  } else if (type === 'profit' || type === 'cost') {
     title = type === 'profit' ? 'تفاصيل الأرباح' : 'تفاصيل التكلفة';
     const map = {};
     periodOrders.forEach(o => { (o.items || []).forEach(it => {
